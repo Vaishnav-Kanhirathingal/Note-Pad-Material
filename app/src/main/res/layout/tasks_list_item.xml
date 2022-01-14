@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#eeeeee">
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="200dp"
+        android:layout_height="240dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tasks_card_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/card_text_horizontal_margin"
+                android:layout_marginTop="@dimen/card_margin"
+                android:textSize="@dimen/title_text"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="SAMPLE TEXT" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/ruler_one"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
+                android:layout_marginVertical="@dimen/card_margin"
+                android:background="#888888"
+                app:layout_constraintBottom_toTopOf="@id/test_list_recyclerview"
+                app:layout_constraintTop_toBottomOf="@id/tasks_card_title" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/test_list_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
+                android:layout_marginBottom="@dimen/card_margin"
+                app:layout_constraintBottom_toTopOf="@id/tasks_last_updated"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ruler_one" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tasks_last_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/card_text_horizontal_margin"
+                android:layout_marginBottom="@dimen/card_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="01/01" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
