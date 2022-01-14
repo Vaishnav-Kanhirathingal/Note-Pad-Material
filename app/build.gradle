@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+
 }
 
 android {
@@ -26,6 +29,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -41,4 +47,18 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //view model
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+
+    //room
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    //data store
+    implementation "androidx.datastore:datastore:$data_store_version"
 }
