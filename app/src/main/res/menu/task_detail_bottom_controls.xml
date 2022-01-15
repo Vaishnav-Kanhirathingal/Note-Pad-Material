@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_task_button"
+        android:icon="@drawable/add_task_24"
+        android:title="Add Task" />
+    <item
+        android:id="@+id/remove_completed_task_button"
+        android:icon="@drawable/remove_circle_outline_24"
+        android:title="Remove Task" />
+    <item
+        android:id="@+id/delete_current_task_button"
+        android:icon="@drawable/delete_outline_24"
+        android:title="Delete Task" />
+
+</menu>

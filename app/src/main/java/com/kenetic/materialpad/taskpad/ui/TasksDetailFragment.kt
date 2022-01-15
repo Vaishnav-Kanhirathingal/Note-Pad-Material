@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kenetic.materialpad.R
+import com.kenetic.materialpad.databinding.FragmentTasksDetailBinding
 
 private const val TAG = "TasksDetailFragment"
+
 class TasksDetailFragment : Fragment() {
+    private lateinit var binding: FragmentTasksDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -17,8 +20,8 @@ class TasksDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tasks_detail, container, false)
+        binding = FragmentTasksDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

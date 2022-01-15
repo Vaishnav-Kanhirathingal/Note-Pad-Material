@@ -6,11 +6,11 @@
         android:enabled="true"
         android:title="Open Notes"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/clear_box_30" />
+        android:icon="@drawable/notes_24" />
     <item
         android:id="@+id/to_tasks_fragment"
         android:enabled="true"
         android:title="Open Tasks"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/checklist_30"/>
+        android:icon="@drawable/list_24"/>
 </menu>

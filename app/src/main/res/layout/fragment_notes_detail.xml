@@ -6,59 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".notepad.ui.NotesDetailFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/notes_action_bar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/notes_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginHorizontal="@dimen/bottom_control_margin"
-        android:layout_marginBottom="@dimen/bottom_control_margin"
-        app:cardCornerRadius="@dimen/card_radius"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TableRow
-            android:id="@+id/notes_action_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingVertical="6dp">
-
-            <ImageButton
-                android:id="@+id/next_list_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/card_margin"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:contentDescription="add next list item"
-                android:src="@drawable/checklist_30" />
-
-            <ImageButton
-                android:id="@+id/remove_current_list_item_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/card_margin"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:contentDescription="remove completed tasks"
-                android:src="@drawable/remove_circle_outline_30" />
-
-            <ImageButton
-                android:id="@+id/space_tab_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/card_margin"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:contentDescription="remove completed tasks"
-                android:src="@drawable/keyboard_tab_30" />
-
-        </TableRow>
-
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/notes_detail_bottom_controls" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

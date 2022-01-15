@@ -26,12 +26,14 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mainBottomNavigation.setOnClickListener {
-            when (it.id) {
+        //todo - set the correct onclick listener
+        binding.mainBottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
                 R.id.to_notes_fragment -> {
                     Toast
                         .makeText(requireContext(), "already in notes fragment", Toast.LENGTH_SHORT)
                         .show()
+                    true
                 }
                 R.id.to_tasks_fragment -> {
                     findNavController()
@@ -39,6 +41,13 @@ class NotesListFragment : Fragment() {
                             NotesListFragmentDirections
                                 .actionNotesListFragmentToTasksListFragment()
                         )
+                    true
+                }
+                else -> {
+                    Toast
+                        .makeText(requireContext(), "bottom nav error", Toast.LENGTH_SHORT)
+                        .show()
+                    false
                 }
             }
         }
@@ -48,5 +57,6 @@ class NotesListFragment : Fragment() {
                     .actionNotesListFragmentToNotesDetailFragment()
             )
         }
+        //todo - set adapter
     }
 }

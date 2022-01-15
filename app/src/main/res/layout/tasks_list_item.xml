@@ -45,24 +45,37 @@
                 android:id="@+id/test_list_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:itemCount="6"
-                app:layout_constraintHeight_max="200dp"
-                tools:listitem="@layout/task_item"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginBottom="@dimen/card_margin"
+                app:layout_constraintHeight_max="200dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ruler_one" />
+                app:layout_constraintTop_toBottomOf="@id/ruler_one"
+                tools:itemCount="6"
+                tools:listitem="@layout/task_or_notes_item" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tasks_last_updated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/card_text_horizontal_margin"
                 android:layout_marginVertical="@dimen/card_margin"
-                app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
+                android:textSize="11sp"
+                android:layout_marginEnd="@dimen/card_text_horizontal_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
                 tools:text="01/01" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:textSize="11sp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/card_margin"
+                android:layout_marginStart="@dimen/card_text_horizontal_margin"
+                app:layout_constraintRight_toLeftOf="@id/tasks_last_updated"
+                android:layout_marginEnd="@dimen/card_margin"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
+                tools:text="20/12/22 - 16:00" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
