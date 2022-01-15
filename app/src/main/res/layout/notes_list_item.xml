@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#eeeeee">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="200dp"
-        android:layout_height="240dp"
-        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/recycler_padding"
         app:cardCornerRadius="@dimen/card_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -36,8 +36,8 @@
                 android:id="@+id/ruler_one"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginVertical="@dimen/card_margin"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
+                android:layout_marginVertical="@dimen/card_margin"
                 android:background="#888888"
                 app:layout_constraintBottom_toTopOf="@id/Notes_content"
                 app:layout_constraintTop_toBottomOf="@id/notes_card_title" />
@@ -45,11 +45,12 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/Notes_content"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:textColor="#888888"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginBottom="@dimen/card_margin"
+                android:textColor="#888888"
                 app:layout_constraintBottom_toTopOf="@id/notes_last_updated"
+                app:layout_constraintHeight_max="200dp"
                 app:layout_constraintTop_toBottomOf="@id/ruler_one"
                 tools:text="@string/long_sample_text" />
 
@@ -57,11 +58,11 @@
                 android:id="@+id/notes_last_updated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="@dimen/card_margin"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
-                tools:text="07/02"/>
+                android:layout_marginBottom="@dimen/card_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="07/02" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

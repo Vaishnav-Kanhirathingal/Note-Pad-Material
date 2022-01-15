@@ -1,6 +1,6 @@
 package com.kenetic.materialpad.taskpad.dataclass
 
 data class Task(
-    var done:Boolean,
+    var isDone:Boolean,
     var task:String
 )

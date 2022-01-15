@@ -9,6 +9,7 @@ data class TasksData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "list_of_tasks") var listOfTasks: List<Task>,
     @ColumnInfo(name = "is_favourite") var isFavourite: Boolean,
-    @ColumnInfo(name = "title") var title: String
-    //reminder?
+    @ColumnInfo(name = "title") var title: String,
+    @ColumnInfo(name = "is_protected") var isProtected :Boolean
+    //todo - reminder, date
 )

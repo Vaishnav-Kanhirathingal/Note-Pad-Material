@@ -4,4 +4,7 @@
     <dimen name="card_text_horizontal_margin">10dp</dimen>
     <dimen name="title_text">18sp</dimen>
     <dimen name="card_radius">10dp</dimen>
+    <dimen name="recycler_padding">3dp</dimen>
+    <dimen name="fab_margin">20dp</dimen>
+    <dimen name="bottom_control_margin">4dp</dimen>
 </resources>

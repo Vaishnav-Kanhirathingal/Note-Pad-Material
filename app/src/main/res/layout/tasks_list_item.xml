@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#eeeeee">
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="200dp"
-        android:layout_height="240dp"
-        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin"
         app:cardCornerRadius="@dimen/card_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -18,7 +18,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tasks_card_title"
@@ -44,12 +44,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/test_list_recyclerview"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                tools:itemCount="6"
+                app:layout_constraintHeight_max="200dp"
+                tools:listitem="@layout/task_item"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginBottom="@dimen/card_margin"
-                app:layout_constraintBottom_toTopOf="@id/tasks_last_updated"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ruler_one" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -57,7 +58,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/card_text_horizontal_margin"
-                android:layout_marginBottom="@dimen/card_margin"
+                android:layout_marginVertical="@dimen/card_margin"
+                app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 tools:text="01/01" />
