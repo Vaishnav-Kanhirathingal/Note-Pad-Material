@@ -58,22 +58,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/card_margin"
-                android:textSize="11sp"
                 android:layout_marginEnd="@dimen/card_text_horizontal_margin"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
                 tools:text="01/01" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/scheduled_text_view"
                 android:layout_width="0dp"
-                android:textSize="11sp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/card_margin"
                 android:layout_marginStart="@dimen/card_text_horizontal_margin"
-                app:layout_constraintRight_toLeftOf="@id/tasks_last_updated"
                 android:layout_marginEnd="@dimen/card_margin"
+                android:textSize="11sp"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tasks_last_updated"
                 app:layout_constraintTop_toBottomOf="@id/test_list_recyclerview"
                 tools:text="20/12/22 - 16:00" />
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/delete_outline_24"
+        android:title="delete"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/restore_24"
+        android:title="recover"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/done_24"
+        android:title="done"
+        app:showAsAction="always" />
+</menu>

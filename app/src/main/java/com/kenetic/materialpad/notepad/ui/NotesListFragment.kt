@@ -54,7 +54,10 @@ class NotesListFragment : Fragment() {
         binding.addNotesFab.setOnClickListener {
             findNavController().navigate(
                 NotesListFragmentDirections
-                    .actionNotesListFragmentToNotesDetailFragment()
+                    .actionNotesListFragmentToNotesDetailFragment(
+                        fromFab = false,
+                        notesId = 0
+                    )
             )
         }
         //todo - set adapter

@@ -39,16 +39,16 @@
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginVertical="@dimen/card_margin"
                 android:background="#888888"
-                app:layout_constraintBottom_toTopOf="@id/Notes_content"
+                app:layout_constraintBottom_toTopOf="@id/Notes_content_recycler"
                 app:layout_constraintTop_toBottomOf="@id/notes_card_title" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/Notes_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Notes_content_recycler"
                 android:layout_width="match_parent"
+                tools:listitem="@layout/task_or_notes_item"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginBottom="@dimen/card_margin"
-                android:textColor="#888888"
                 app:layout_constraintBottom_toTopOf="@id/notes_last_updated"
                 app:layout_constraintHeight_max="200dp"
                 app:layout_constraintTop_toBottomOf="@id/ruler_one"

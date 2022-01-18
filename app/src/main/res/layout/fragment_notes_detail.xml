@@ -7,6 +7,7 @@
     tools:context=".notepad.ui.NotesDetailFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notes_detail_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/notes_action_bar"

@@ -11,24 +11,28 @@ import com.kenetic.materialpad.notepad.dataclass.Notes
 import com.kenetic.materialpad.notepad.dataclass.NotesData
 import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 
-class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
-    ListAdapter<Int, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
+class NotesDetailScreenAdapter(
+    var viewModel: NotesViewModel,
+    private val listAdder: (Int) -> Unit
+) :
+    ListAdapter<Notes, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
 
     class ViewHolder(private val binding: TaskOrNotesItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(notes:Notes) {
-            binding.taskCheckbox.isChecked = notes.listItemIsChecked
+        fun bind(notes: Notes, position: Int, listAdder: (Int) -> Unit) {
+            binding.checkbox.isChecked = notes.listItemIsChecked
+            binding.editText.text//todo - set observer
         }
     }
 
     companion object {
-        private val diffCallBack = object : DiffUtil.ItemCallback<Int>() {
-            override fun areItemsTheSame(oldItem: Int, newItem: Int): Boolean {
-                return oldItem==newItem
+        private val diffCallBack = object : DiffUtil.ItemCallback<Notes>() {
+            override fun areItemsTheSame(oldItem: Notes, newItem: Notes): Boolean {
+                return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean {
-                return oldItem==newItem
+            override fun areContentsTheSame(oldItem: Notes, newItem: Notes): Boolean {
+                return oldItem == newItem
             }
         }
     }
@@ -40,6 +44,6 @@ class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //a live data observer that send the class data to the viewHolder
+        holder.bind(getItem(position),position,listAdder)
     }
 }

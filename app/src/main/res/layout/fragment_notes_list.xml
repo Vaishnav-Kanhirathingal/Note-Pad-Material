@@ -8,7 +8,7 @@
     tools:context=".notepad.ui.NotesListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notes_recycler_view"
+        android:id="@+id/notes_main_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/notes_list_item"
