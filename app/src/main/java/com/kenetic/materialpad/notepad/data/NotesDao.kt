@@ -2,7 +2,6 @@ package com.kenetic.materialpad.notepad.data
 
 import androidx.room.*
 import com.kenetic.materialpad.notepad.dataclass.NotesData
-import com.kenetic.materialpad.taskpad.dataclass.TasksData
 import kotlinx.coroutines.flow.Flow
 
 @Dao

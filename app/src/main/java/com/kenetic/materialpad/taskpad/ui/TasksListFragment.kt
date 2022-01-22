@@ -1,15 +1,14 @@
 package com.kenetic.materialpad.taskpad.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kenetic.materialpad.R
 import com.kenetic.materialpad.databinding.FragmentTasksListBinding
-import com.kenetic.materialpad.notepad.ui.NotesListFragmentDirections
 
 private const val TAG = "TasksListFragment"
 
@@ -41,7 +40,7 @@ class TasksListFragment : Fragment() {
                         .show()
                     true
                 }
-                else ->{
+                else -> {
                     Toast
                         .makeText(requireContext(), "bottom nav error", Toast.LENGTH_SHORT)
                         .show()

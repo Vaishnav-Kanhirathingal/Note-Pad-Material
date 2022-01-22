@@ -1,12 +1,11 @@
-package com.kenetic.materialpad.taskpad.data
+package com.kenetic.materialpad.datastore
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
+import com.kenetic.materialpad.notepad.dataclass.Notes
 import com.kenetic.materialpad.taskpad.dataclass.Task
 
-@ProvidedTypeConverter
-class TasksTypeConverter {
+class AppGeneralTypeConverter {
     //----------------------------------------------------------------------------------------------
     @TypeConverter
     fun fromListOfBoolean(temp: List<Boolean>): String =
@@ -26,10 +25,20 @@ class TasksTypeConverter {
 
     //----------------------------------------------------------------------------------------------
     @TypeConverter
-    fun fromListOfTask(temp: List<Task>): String =
+    fun fromListOfNotes(temp: List<Notes>): String =
         Gson().toJson(temp)//todo - check for consistency
 
     @TypeConverter
-    fun toListOfTask(temp: String): List<Task> =
+    fun toListOfNotes(temp: String): List<Notes> =
+        Gson().fromJson(temp, listOf<Notes>().javaClass)
+
+    //----------------------------------------------------------------------------------------------
+    @TypeConverter
+    fun fromListOfTasks(temp: List<Task>): String =
+        Gson().toJson(temp)//todo - check for consistency
+
+    @TypeConverter
+    fun toListOfTasks(temp: String): List<Task> =
         Gson().fromJson(temp, listOf<Task>().javaClass)
+    //----------------------------------------------------------------------------------------------
 }

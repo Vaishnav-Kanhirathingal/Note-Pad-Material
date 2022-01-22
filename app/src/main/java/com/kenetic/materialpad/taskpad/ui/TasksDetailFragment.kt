@@ -1,7 +1,6 @@
 package com.kenetic.materialpad.taskpad.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,7 +23,7 @@ class TasksDetailFragment : Fragment() {
     private lateinit var binding: FragmentTasksDetailBinding
     private val taskViewModel: TasksViewModel by activityViewModels {
         TasksViewModelFactory(
-            (activity?.application as AppApplication).taskDatabase.tasksDao()
+            (activity?.application as AppApplication).appGeneralDatabase.tasksDao()
         )
     }
     private var tempTaskList: MutableList<Task> = arrayListOf()
@@ -69,7 +68,7 @@ class TasksDetailFragment : Fragment() {
                 }
             }
         }
-        tempTaskList=temp
+        tempTaskList = temp
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -84,7 +83,7 @@ class TasksDetailFragment : Fragment() {
                 true
             }
             R.id.details_recover -> {
-                tempTaskList= arrayListOf()
+                tempTaskList = arrayListOf()
                 setTempTaskData()
                 true
             }

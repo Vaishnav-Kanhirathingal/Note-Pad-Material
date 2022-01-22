@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "task_data")
 data class TasksData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    //@ColumnInfo(name = "list_of_tasks") var listOfTasks: List<Task>,
+    @ColumnInfo(name = "list_of_tasks") var listOfTasks: List<Task>,
     //adding new variables--------------------------------------------------------------------------
     @ColumnInfo(name = "list_is_done") var listIsDone: List<Boolean>,
     @ColumnInfo(name = "list_task") var listTask: List<String>,

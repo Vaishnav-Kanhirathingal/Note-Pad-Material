@@ -22,11 +22,11 @@ class NotesMainScreenAdapter(var viewModel: NotesViewModel) :
     companion object {
         private val diffCallBack = object : DiffUtil.ItemCallback<Int>() {
             override fun areItemsTheSame(oldItem: Int, newItem: Int): Boolean {
-                return oldItem==newItem
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean {
-                return oldItem==newItem
+                return oldItem == newItem
             }
         }
     }

@@ -1,9 +1,7 @@
 package com.kenetic.materialpad.taskpad.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.kenetic.materialpad.notepad.dataclass.NotesData
 import com.kenetic.materialpad.taskpad.data.TasksDao
 import com.kenetic.materialpad.taskpad.dataclass.TasksData
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class TasksViewModel(private val tasksDao: TasksDao):ViewModel() {
+class TasksViewModel(private val tasksDao: TasksDao) : ViewModel() {
 
     fun insert(td: TasksData) {
         CoroutineScope(Dispatchers.IO).launch {

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/notesListFragment"
         android:name="com.kenetic.materialpad.notepad.ui.NotesListFragment"
-        android:label="NotesListFragment" >
+        android:label="NotesListFragment">
         <action
             android:id="@+id/action_notesListFragment_to_notesDetailFragment"
             app:destination="@id/notesDetailFragment" />
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/tasksListFragment"
         android:name="com.kenetic.materialpad.taskpad.ui.TasksListFragment"
-        android:label="TasksListFragment" >
+        android:label="TasksListFragment">
         <action
             android:id="@+id/action_tasksListFragment_to_tasksDetailFragment"
             app:destination="@id/tasksDetailFragment" />
@@ -35,7 +35,7 @@
         android:id="@+id/notesDetailFragment"
         android:name="com.kenetic.materialpad.notepad.ui.NotesDetailFragment"
         android:label="fragment_notes_detail"
-        tools:layout="@layout/fragment_notes_detail" >
+        tools:layout="@layout/fragment_notes_detail">
         <argument
             android:name="from_fab"
             app:argType="boolean" />
@@ -47,7 +47,7 @@
         android:id="@+id/tasksDetailFragment"
         android:name="com.kenetic.materialpad.taskpad.ui.TasksDetailFragment"
         android:label="fragment_tasks_detail"
-        tools:layout="@layout/fragment_tasks_detail" >
+        tools:layout="@layout/fragment_tasks_detail">
         <argument
             android:name="from_fab"
             app:argType="boolean" />

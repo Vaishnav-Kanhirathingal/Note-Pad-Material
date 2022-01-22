@@ -6,12 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kenetic.materialpad.notepad.dataclass.NotesData
-import com.kenetic.materialpad.taskpad.dataclass.TasksData
 
+//Now Obsolete
 @Database(
     entities = [
-        NotesData::class,
-        //TasksData::class
+        NotesData::class
     ],
     version = 1,
     exportSchema = false

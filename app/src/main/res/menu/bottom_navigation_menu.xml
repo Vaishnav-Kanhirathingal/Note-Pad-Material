@@ -4,13 +4,13 @@
     <item
         android:id="@+id/to_notes_fragment"
         android:enabled="true"
+        android:icon="@drawable/notes_24"
         android:title="Open Notes"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/notes_24" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/to_tasks_fragment"
         android:enabled="true"
+        android:icon="@drawable/list_24"
         android:title="Open Tasks"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/list_24"/>
+        app:showAsAction="ifRoom" />
 </menu>

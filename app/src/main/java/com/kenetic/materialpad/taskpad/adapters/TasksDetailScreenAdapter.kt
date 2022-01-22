@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kenetic.materialpad.databinding.TaskOrNotesItemBinding
 import com.kenetic.materialpad.taskpad.dataclass.Task
-import com.kenetic.materialpad.taskpad.viewmodel.TasksViewModel
 
 private const val TAG = "TasksDetailScreenAdapter"
 

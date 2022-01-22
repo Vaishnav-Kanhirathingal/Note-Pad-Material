@@ -5,10 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kenetic.materialpad.databinding.NotesListItemBinding
 import com.kenetic.materialpad.databinding.TaskOrNotesItemBinding
 import com.kenetic.materialpad.notepad.dataclass.Notes
-import com.kenetic.materialpad.notepad.dataclass.NotesData
 import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 
 class NotesDetailScreenAdapter(
@@ -44,6 +42,6 @@ class NotesDetailScreenAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position),position,listAdder)
+        holder.bind(getItem(position), position, listAdder)
     }
 }

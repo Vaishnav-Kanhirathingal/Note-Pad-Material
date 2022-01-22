@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "notes_data")
 data class NotesData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    //@ColumnInfo(name = "notes") var notes: List<Notes>,
+    @ColumnInfo(name = "notes") var notes: List<Notes>,
     //adding new variables--------------------------------------------------------------------------
     @ColumnInfo(name = "list_is_a_list_item") var listIsAListItem: List<Boolean>,
     @ColumnInfo(name = "list_list_item_is_checked") var listListItemIsChecked: List<Boolean>,

@@ -8,9 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
-class NotesViewModel(private val notesDao: NotesDao):ViewModel() {
+class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
 
     fun insert(nd: NotesData) {
         CoroutineScope(Dispatchers.IO).launch {

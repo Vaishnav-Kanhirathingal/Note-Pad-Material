@@ -2,7 +2,6 @@ package com.kenetic.materialpad.notepad.ui
 
 import android.os.Bundle
 import android.view.*
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -25,7 +24,7 @@ class NotesDetailFragment : Fragment() {
     private lateinit var binding: FragmentNotesDetailBinding
     private val notesViewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory(
-            (activity?.application as AppApplication).notesDatabase.notesDao()
+            (activity?.application as AppApplication).appGeneralDatabase.notesDao()
         )
     }
 
