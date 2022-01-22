@@ -52,7 +52,7 @@ class TasksListFragment : Fragment() {
         binding.addTasksFab.setOnClickListener {
             findNavController().navigate(
                 TasksListFragmentDirections
-                    .actionTasksListFragmentToTasksDetailFragment()
+                    .actionTasksListFragmentToTasksDetailFragment(fromFab = true, taskId = 0)
             )
         }
     }

@@ -47,5 +47,12 @@
         android:id="@+id/tasksDetailFragment"
         android:name="com.kenetic.materialpad.taskpad.ui.TasksDetailFragment"
         android:label="fragment_tasks_detail"
-        tools:layout="@layout/fragment_tasks_detail" />
+        tools:layout="@layout/fragment_tasks_detail" >
+        <argument
+            android:name="from_fab"
+            app:argType="boolean" />
+        <argument
+            android:name="task_id"
+            app:argType="integer" />
+    </fragment>
 </navigation>

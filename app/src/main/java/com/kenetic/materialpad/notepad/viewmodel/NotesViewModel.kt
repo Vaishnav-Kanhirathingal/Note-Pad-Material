@@ -34,7 +34,7 @@ class NotesViewModel(private val notesDao: NotesDao):ViewModel() {
 
     fun getAllId(): Flow<List<Int>> = notesDao.getAllId()
 
-    fun getById(id: Int): NotesData = notesDao.getById(id)
+    fun getById(id: Int): Flow<NotesData> = notesDao.getById(id)
 
 }
 

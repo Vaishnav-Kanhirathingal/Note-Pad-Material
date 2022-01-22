@@ -26,5 +26,5 @@ interface NotesDao {
 
     //----------------------------------------------------------------------------------------------
     @Query("SELECT * FROM notes_data where id = :id")
-    fun getById(id: Int): NotesData
+    fun getById(id: Int): Flow<NotesData>
 }

@@ -10,6 +10,7 @@
         android:id="@+id/tasks_detail_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        tools:listitem="@layout/task_or_notes_item"
         app:layout_constraintBottom_toTopOf="@id/tasks_action_bar"
         app:layout_constraintTop_toTopOf="parent" />
 

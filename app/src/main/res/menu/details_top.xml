@@ -2,14 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/details_delete"
         android:icon="@drawable/delete_outline_24"
         android:title="delete"
         app:showAsAction="always" />
     <item
+        android:id="@+id/details_recover"
         android:icon="@drawable/restore_24"
         android:title="recover"
         app:showAsAction="always" />
     <item
+        android:id="@+id/details_save"
         android:icon="@drawable/done_24"
         android:title="done"
         app:showAsAction="always" />
