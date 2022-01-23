@@ -24,17 +24,12 @@ class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
     }
 
     fun delete(nd: NotesData) {
-        CoroutineScope(Dispatchers.IO).launch {
-            notesDao.delete(nd)
-        }
+        CoroutineScope(Dispatchers.IO).launch { notesDao.delete(nd) }
     }
 
     fun getAll(): Flow<List<NotesData>> = notesDao.getAll()
-
     fun getAllId(): Flow<List<Int>> = notesDao.getAllId()
-
     fun getById(id: Int): Flow<NotesData> = notesDao.getById(id)
-
 }
 
 class NotesViewModelFactory(private val notesDao: NotesDao) : ViewModelProvider.Factory {

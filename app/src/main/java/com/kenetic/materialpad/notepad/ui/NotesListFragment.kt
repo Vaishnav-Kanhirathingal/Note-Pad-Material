@@ -55,7 +55,7 @@ class NotesListFragment : Fragment() {
             findNavController().navigate(
                 NotesListFragmentDirections
                     .actionNotesListFragmentToNotesDetailFragment(
-                        fromFab = false,
+                        fromFab = true,
                         notesId = 0
                     )
             )

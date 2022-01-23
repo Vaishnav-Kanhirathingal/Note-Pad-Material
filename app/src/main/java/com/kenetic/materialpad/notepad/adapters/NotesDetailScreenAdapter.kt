@@ -11,7 +11,9 @@ import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 
 class NotesDetailScreenAdapter(
     var viewModel: NotesViewModel,
-    private val listAdder: (Int) -> Unit
+    private val listAdder: (Int) -> Unit,
+    private val listRemover:(Int)->Unit,
+    private val fileChanged:()->Unit
 ) :
     ListAdapter<Notes, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
 

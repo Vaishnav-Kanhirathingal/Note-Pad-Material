@@ -15,6 +15,5 @@ data class NotesData(
     //adding new variables--------------------------------------------------------------------------
     @ColumnInfo(name = "is_favourite") var isFavourite: Boolean,
     @ColumnInfo(name = "title") var title: String,
-    @ColumnInfo(name = "is_protected") var isProtected: Boolean
-    //todo - date, reminder
+    @ColumnInfo(name = "date_formatted")var dateFormatted:Long
 )
