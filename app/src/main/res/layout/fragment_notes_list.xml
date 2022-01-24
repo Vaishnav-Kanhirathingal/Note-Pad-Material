@@ -22,13 +22,17 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:src="@drawable/add_24"
-        app:layout_constraintBottom_toTopOf="@id/main_bottom_navigation"
+        app:layout_constraintBottom_toTopOf="@id/navigate_fab"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/main_bottom_navigation"
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navigate_fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:src="@drawable/list_24"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

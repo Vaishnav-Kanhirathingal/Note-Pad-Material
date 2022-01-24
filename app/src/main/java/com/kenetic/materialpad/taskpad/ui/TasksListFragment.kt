@@ -4,15 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
-import com.kenetic.materialpad.R
+import androidx.recyclerview.widget.GridLayoutManager
 import com.kenetic.materialpad.databinding.FragmentTasksListBinding
+import com.kenetic.materialpad.datastore.AppApplication
+import com.kenetic.materialpad.taskpad.adapters.TasksMainScreenAdapter
+import com.kenetic.materialpad.taskpad.viewmodel.TasksViewModel
+import com.kenetic.materialpad.taskpad.viewmodel.TasksViewModelFactory
 
 private const val TAG = "TasksListFragment"
 
 class TasksListFragment : Fragment() {
+    private val taskViewModel: TasksViewModel by activityViewModels {
+        TasksViewModelFactory(
+            (activity?.application as AppApplication).appGeneralDatabase.tasksDao()
+        )
+    }
     private lateinit var binding: FragmentTasksListBinding
 
     override fun onCreateView(
@@ -24,29 +34,12 @@ class TasksListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.mainBottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.to_notes_fragment -> {
-                    findNavController()
-                        .navigate(
-                            TasksListFragmentDirections
-                                .actionTasksListFragmentToNotesListFragment()
-                        )
-                    true
-                }
-                R.id.to_tasks_fragment -> {
-                    Toast
-                        .makeText(requireContext(), "already in notes fragment", Toast.LENGTH_SHORT)
-                        .show()
-                    true
-                }
-                else -> {
-                    Toast
-                        .makeText(requireContext(), "bottom nav error", Toast.LENGTH_SHORT)
-                        .show()
-                    false
-                }
-            }
+        binding.navigateFab.setOnClickListener {
+            findNavController()
+                .navigate(
+                    TasksListFragmentDirections
+                        .actionTasksListFragmentToNotesListFragment()
+                )
         }
         binding.addTasksFab.setOnClickListener {
             findNavController().navigate(
@@ -54,5 +47,11 @@ class TasksListFragment : Fragment() {
                     .actionTasksListFragmentToTasksDetailFragment(fromFab = true, taskId = 0)
             )
         }
+        binding.tasksRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = TasksMainScreenAdapter(taskViewModel)
+        taskViewModel.getAllId().asLiveData().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+        binding.tasksRecyclerView.adapter = adapter
     }
 }
