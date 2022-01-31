@@ -3,16 +3,13 @@ package com.kenetic.materialpad.notepad.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kenetic.materialpad.databinding.NotesListItemBinding
-import com.kenetic.materialpad.notepad.dataclass.Notes
 import com.kenetic.materialpad.notepad.dataclass.NotesData
 import com.kenetic.materialpad.notepad.ui.NotesListFragment
 import com.kenetic.materialpad.notepad.ui.NotesListFragmentDirections
@@ -23,7 +20,7 @@ import java.util.*
 class NotesMainScreenAdapter(
     private var viewModel: NotesViewModel,
     private val lifecycleOwner: LifecycleOwner,
-    private var fragInstance:NotesListFragment
+    private var fragInstance: NotesListFragment
 ) :
     ListAdapter<Int, NotesMainScreenAdapter.ViewHolder>(diffCallBack) {
 
@@ -36,20 +33,7 @@ class NotesMainScreenAdapter(
                 SimpleDateFormat("dd/MM/yy").format(Date(notesData.dateFormatted))
             val adapter = NotesSubAdapter()
             binding.NotesContentRecycler.adapter = adapter
-
-            val tempListNotes = mutableListOf<Notes>()          //notesData.notes
-
-            notesData.listListItemIsChecked.size.let {
-                for (i in 0..it) {
-                    tempListNotes.add(
-                        Notes(
-                            isAListItem = notesData.listIsAListItem[i],
-                            listItemIsChecked = notesData.listListItemIsChecked[i],
-                            content = notesData.listContent[i]
-                        )
-                    )
-                }
-            }
+            val tempListNotes = notesData.notes.toMutableList()
             adapter.submitList(tempListNotes)
         }
     }
@@ -75,12 +59,8 @@ class NotesMainScreenAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         viewModel.getById(getItem(position)).asLiveData().observe(lifecycleOwner) {
             val temp = it
-            if (it.listListItemIsChecked.size > 2) {
-                temp.listIsAListItem = it.listIsAListItem.subList(0, 2)
-                temp.listContent = it.listContent.subList(0, 2)
-                temp.listListItemIsChecked = it.listListItemIsChecked.subList(0, 2)
-                //---------------------------------
-                temp.notes = it.notes.subList(0, 2)
+            if (it.notes.size > 3) {
+                temp.notes = it.notes.subList(0, 3)
             }
             holder.itemView.setOnClickListener {
                 findNavController(fragInstance).navigate(

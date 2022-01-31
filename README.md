@@ -15,7 +15,7 @@ top menu -
 bottom - 
     -   a '+' fab to add new task/note
     -   a bottom navigation -
-        -   a notes tab
+        -   a note tab
         -   a todo tab
 
 inside notepad -

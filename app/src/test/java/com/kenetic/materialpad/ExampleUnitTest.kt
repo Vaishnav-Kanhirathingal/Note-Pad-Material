@@ -1,5 +1,6 @@
 package com.kenetic.materialpad
 
+import android.util.Log
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -8,6 +9,7 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+private const val TAG = "ExampleUnitTest"
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {

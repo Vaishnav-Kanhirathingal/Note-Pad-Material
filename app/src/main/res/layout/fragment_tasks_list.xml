@@ -10,6 +10,7 @@
         android:id="@+id/tasks_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#eeeeee"
         android:paddingHorizontal="@dimen/card_margin"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"

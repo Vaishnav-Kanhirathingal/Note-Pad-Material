@@ -15,20 +15,21 @@ import com.kenetic.materialpad.R
 import com.kenetic.materialpad.databinding.FragmentNotesDetailBinding
 import com.kenetic.materialpad.datastore.AppApplication
 import com.kenetic.materialpad.notepad.adapters.NotesDetailScreenAdapter
-import com.kenetic.materialpad.notepad.dataclass.Notes
+import com.kenetic.materialpad.notepad.dataclass.Note
 import com.kenetic.materialpad.notepad.dataclass.NotesData
 import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 import com.kenetic.materialpad.notepad.viewmodel.NotesViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 private const val TAG = "NotesDetailFragment"
 
 class NotesDetailFragment : Fragment() {
     private lateinit var notesAdapter: NotesDetailScreenAdapter
-    private val _tempNotes: MutableLiveData<MutableList<Notes>> = MutableLiveData(mutableListOf())
-    private val tempNotes: MutableLiveData<MutableList<Notes>> get() = _tempNotes
+    private val _tempNotes: MutableLiveData<MutableList<Note>> = MutableLiveData(mutableListOf())
+    private val tempNotes: MutableLiveData<MutableList<Note>> get() = _tempNotes
     private lateinit var currentNotesData: NotesData
     private var fromFab = true
     private var notesId = 0
@@ -41,6 +42,7 @@ class NotesDetailFragment : Fragment() {
     private var isFavourite = false
     private var title = "Untitled"
     private var fileChanged = false
+    private var activeElement = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +64,7 @@ class NotesDetailFragment : Fragment() {
             viewModel = notesViewModel,
             listAdder = {
                 _tempNotes.value!!
-                    .add(it, Notes(isAListItem = false, listItemIsChecked = false, content = ""))
+                    .add(it, Note(isAListItem = false, listItemIsChecked = false, content = ""))
             },
             listRemover = { _tempNotes.value!!.removeAt(it) },
             fileChanged = { position: Int,
@@ -77,26 +79,29 @@ class NotesDetailFragment : Fragment() {
                 }
             }
         )
-        binding.notesDetailRecycler.layoutManager = GridLayoutManager(this.requireContext(), 1)
         setResetTempNotes()
-        binding.notesDetailRecycler.adapter = notesAdapter
+        binding.apply {
+            notesDetailRecycler.apply {
+                layoutManager = GridLayoutManager(requireContext(), 1)
+                adapter = notesAdapter
+            }
+            //-----------------------------------------------------------------------bottom-controls
+            checklistLayout.setOnClickListener {
+                _tempNotes.value!![activeElement].isAListItem = true
+            }
+            addTabLayout.setOnClickListener {
+                _tempNotes.value!![activeElement].content.plus("\t")
+            }
+            shareLayout.setOnClickListener {
+                share()
+            }
+            favouriteLayout.setOnClickListener {
+                isFavourite = !isFavourite
+                setFavouriteIcon()
+            }
+        }
         tempNotes.observe(viewLifecycleOwner) {
             notesAdapter.submitList(it)
-        }
-        setFavouriteIcon()
-        //---------------------------------------------------------------------------bottom-controls
-        binding.checklistLayout.setOnClickListener {
-            //reverse active list item status as a check list
-        }
-        binding.addTabLayout.setOnClickListener {
-            //add tab to text in the active
-        }
-        binding.shareLayout.setOnClickListener {
-            //copy text from the tempNotes variable and start an intent
-        }
-        binding.favouriteLayout.setOnClickListener {
-            currentNotesData.isFavourite = !currentNotesData.isFavourite
-            setFavouriteIcon()
         }
     }
 
@@ -105,7 +110,7 @@ class NotesDetailFragment : Fragment() {
             if (fromFab) {
                 _tempNotes.postValue(
                     mutableListOf(
-                        Notes(
+                        Note(
                             isAListItem = false,
                             listItemIsChecked = false,
                             content = ""
@@ -114,61 +119,34 @@ class NotesDetailFragment : Fragment() {
                 )
                 currentNotesData = NotesData(
                     notes = tempNotes.value!!,
-//                    listListItemIsChecked = mutableListOf(false),
-//                    listIsAListItem = mutableListOf(false),
-//                    listContent = mutableListOf(""),
                     isFavourite = false,
                     title = this@NotesDetailFragment.title,
                     dateFormatted = System.currentTimeMillis()
                 )
             } else {
                 currentNotesData = notesViewModel.getById(notesId).asLiveData().value!!
-//                val temp = mutableListOf<Notes>()
-//                currentNotesData.listIsAListItem.size.let {
-//                    for (i in 0..it) {
-//                        temp.add(
-//                            Notes(
-//                                isAListItem = currentNotesData.listIsAListItem[it],
-//                                listItemIsChecked = currentNotesData.listListItemIsChecked[it],
-//                                content = currentNotesData.listContent[it]
-//                            )
-//                        )
-//                    }
-//                }
                 _tempNotes.postValue(currentNotesData.notes.toMutableList())
             }
             fileChanged = false
+            setFavouriteIcon()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun saveTempNotes() {
         CoroutineScope(Dispatchers.IO).launch {
-//            val tempListOfIsAListItem = mutableListOf<Boolean>()
-//            val tempListOfIsChecked = mutableListOf<Boolean>()
-//            val tempListOfContent = mutableListOf<String>()
-//            tempNotes.value!!.size.let {
-//                for (i in 0..it) {
-//                    tempListOfContent.add(tempNotes.value!![i].content)
-//                    tempListOfIsAListItem.add(tempNotes.value!![i].isAListItem)
-//                    tempListOfIsChecked.add(tempNotes.value!![i].listItemIsChecked)
-//                }
-//            }
             currentNotesData.apply {
                 notes = tempNotes.value!!
-//                listContent = tempListOfContent
-//                listIsAListItem = tempListOfIsAListItem
-//                listListItemIsChecked = tempListOfIsChecked
                 isFavourite = this@NotesDetailFragment.isFavourite
                 title = this@NotesDetailFragment.title
                 dateFormatted = System.currentTimeMillis()
             }
             if (fromFab) {
                 notesViewModel.insert(currentNotesData)
-                fromFab = false
             } else {
                 notesViewModel.update(currentNotesData)
             }
+            fromFab = false
             fileChanged = false
         }
     }
@@ -184,13 +162,12 @@ class NotesDetailFragment : Fragment() {
             R.id.details_delete -> {
                 Log.i(TAG, "delete menu button working properly")
                 //todo - add a function to delete active list item
-                if (fromFab) {
-                    findNavController().navigate(
-                        NotesDetailFragmentDirections.actionNotesDetailFragmentToNotesListFragment()
-                    )
-                } else {
+                if (!fromFab) {
                     notesViewModel.delete(currentNotesData)
                 }
+                findNavController().navigate(
+                    NotesDetailFragmentDirections.actionNotesDetailFragmentToNotesListFragment()
+                )
                 true
             }
 
@@ -221,5 +198,31 @@ class NotesDetailFragment : Fragment() {
                 R.drawable.star_unselected_24
             }
         )
+    }
+
+    private fun share() {
+        CoroutineScope(Dispatchers.IO).launch {
+            var sharableText = "date last edited - ${
+                SimpleDateFormat("HH:mm dd:MM:yy").format(System.currentTimeMillis())
+            }"
+            tempNotes.value!!.size.let {
+                for (i in 0 until it) {
+                    val tempOne = tempNotes.value!![i]
+                    sharableText += "\n${
+                        if (tempOne.isAListItem) {
+                            if (tempOne.listItemIsChecked) {
+                                "[#] - "
+                            } else {
+                                "[ ] - "
+                            }
+                        } else {
+                            ""
+                        }
+                    }${tempOne.content}"
+                }
+            }
+            Log.i(TAG, "\n$sharableText")
+            // TODO: start intent for sharing
+        }
     }
 }

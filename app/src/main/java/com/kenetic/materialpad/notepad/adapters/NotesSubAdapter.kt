@@ -7,28 +7,28 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kenetic.materialpad.databinding.TaskOrNotesItemBinding
-import com.kenetic.materialpad.notepad.dataclass.Notes
+import com.kenetic.materialpad.notepad.dataclass.Note
 
-class NotesSubAdapter() : ListAdapter<Notes, NotesSubAdapter.ViewHolder>(diffCallBack) {
+class NotesSubAdapter() : ListAdapter<Note, NotesSubAdapter.ViewHolder>(diffCallBack) {
 
     class ViewHolder(private val binding: TaskOrNotesItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(notes: Notes) {
-            binding.checkbox.visibility = if (notes.isAListItem) {
+        fun bind(note: Note) {
+            binding.checkbox.visibility = if (note.isAListItem) {
                 View.VISIBLE
             } else {
                 View.GONE
             }
-            binding.editText.setText(notes.content)
+            binding.editText.setText(note.content)
         }
     }
 
     companion object {
-        private val diffCallBack = object : DiffUtil.ItemCallback<Notes>() {
-            override fun areItemsTheSame(oldItem: Notes, newItem: Notes): Boolean =
+        private val diffCallBack = object : DiffUtil.ItemCallback<Note>() {
+            override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean =
                 oldItem.content == newItem.content
 
-            override fun areContentsTheSame(oldItem: Notes, newItem: Notes): Boolean =
+            override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean =
                 oldItem.content == newItem.content
         }
     }

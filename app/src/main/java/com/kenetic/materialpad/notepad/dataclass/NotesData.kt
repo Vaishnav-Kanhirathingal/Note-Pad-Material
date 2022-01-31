@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "notes_data")
 data class NotesData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "notes") var notes: List<Notes>,
+    @ColumnInfo(name = "notes") var notes: List<Note>,
     //adding new variables--------------------------------------------------------------------------
     @ColumnInfo(name = "is_favourite") var isFavourite: Boolean,
     @ColumnInfo(name = "title") var title: String,
