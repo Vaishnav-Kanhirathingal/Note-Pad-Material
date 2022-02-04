@@ -1,7 +1,6 @@
 package com.kenetic.materialpad.notepad.adapters
 
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +16,11 @@ private const val TAG = "NotesDetailScreenAdapter"
 
 class NotesDetailScreenAdapter(
     var viewModel: NotesViewModel,
-    private val listAdder: (Int) -> Unit,
-    private val listRemover: (Int) -> Unit,
-    private val fileChanged: (
+    private val fileUpdate: (
         position: Int,
-        text: String,
-        isAListItem: Boolean,
-        ListItemIsChecked: Boolean
-    ) -> Unit
+        text: String
+    ) -> Unit,
+    private val setActive: (position: Int) -> Unit
 ) :
     ListAdapter<Note, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
 
@@ -33,16 +29,14 @@ class NotesDetailScreenAdapter(
         fun bind(
             note: Note,
             position: Int,
-            listAdder: (Int) -> Unit,
-            listRemover: (Int) -> Unit,
-            fileChanged: (
+            textUpdater: (
                 position: Int,
-                text: String,
-                isAListItem: Boolean,
-                ListItemIsChecked: Boolean
-            ) -> Unit
+                text: String
+            ) -> Unit,
+            setActive: (position: Int) -> Unit,
+            viewModel: NotesViewModel,
         ) {
-            Log.i(TAG, "bind working")
+            val previousText = ""
             binding.apply {
                 if (note.isAListItem) {
                     checkbox.visibility = View.VISIBLE
@@ -52,45 +46,39 @@ class NotesDetailScreenAdapter(
                 }
                 editText.setText(note.content)
 
-                checkbox.setOnClickListener {
-                    fileChanged(
-                        position,
-                        editText.text.toString(),
-                        note.isAListItem,
-                        note.listItemIsChecked
-                    )
+                checkbox.setOnClickListener {//-----------------------------------check-box-listener
+                    viewModel.changeCheckedStatus(position, checkbox.isChecked)
                 }
 
+                //---------------------------------------------------------------------text-listener
                 editText.addTextChangedListener {
-                    Log.i(TAG, "addTextChangedListener working")
+                    val currText = it.toString()
+                    when {
+                        previousText.length == currText.length -> {//-------------backspace-detected
+                            Log.i(TAG, "back-space detected")
+                            viewModel.onBackSpaceKey(position, currText)
+                        }
+                        "\n" in currText -> {//-----------------------------------enter-key-detected
+                            Log.i(TAG, "\\n detected")
+                            val temp = currText.split("\n", limit = 2)
+                            editText.setText(temp[0])
+                            viewModel.onEnterKey(position, temp[1])
+                        }
+                        else -> {//----------------------------------------------------normal-update
+                            textUpdater(
+                                position, currText
+                            )
+                            setActive(position)
+                        }
+                    }
                 }
-
-                editText.setOnKeyListener { view, i, keyEvent ->    //not working
-                    Log.i(TAG, "onKeyListener working")
-                    when (i) {
-                        KeyEvent.KEYCODE_ENTER -> {
-                            fileChanged(
-                                position,
-                                editText.text.toString(),
-                                note.isAListItem,
-                                note.listItemIsChecked
-                            )
-                            listAdder(position)
-                            true
-                        }
-                        KeyEvent.KEYCODE_DEL -> {
-                            fileChanged(
-                                position,
-                                editText.text.toString(),
-                                note.isAListItem,
-                                note.listItemIsChecked
-                            )
-                            if (editText.text.isNullOrEmpty() && position != 0) {
-                                listRemover(position)
-                            }
-                            true
-                        }
-                        else -> false
+                editText.setOnFocusChangeListener { _, hasFocus: Boolean ->
+                    if (hasFocus) {
+                        Log.i(TAG,"focus on position - $position")
+                        viewModel.activeElement = position
+                    }else if (position==viewModel.activeElement){
+                        editText.requestFocus()
+                        Log.i(TAG,"focus on position - $position")
                     }
                 }
             }
@@ -114,6 +102,12 @@ class NotesDetailScreenAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), position, listAdder, listRemover, fileChanged)
+        holder.bind(
+            getItem(position),
+            position,
+            fileUpdate,
+            setActive,
+            viewModel
+        )
     }
 }
