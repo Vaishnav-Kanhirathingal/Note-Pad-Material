@@ -59,10 +59,6 @@ dependencies {
     //data store
     implementation "androidx.datastore:datastore:$data_store_version"
 
-    //room
-    //implementation "androidx.room:room-runtime:$room_version"
-    //annotationProcessor "androidx.room:room-compiler:$room_version"
-
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

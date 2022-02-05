@@ -21,7 +21,6 @@ import com.kenetic.materialpad.notepad.viewmodel.NotesViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 private const val TAG = "NotesDetailFragment"
 
@@ -57,18 +56,7 @@ class NotesDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        //-------------------------------------------------------------------------------set-adapter
-        notesAdapter = NotesDetailScreenAdapter(
-            viewModel = notesViewModel,
-            fileUpdate = { position: Int,
-                           text:String ->
-                fileChanged = true
-                notesViewModel.textUpdater(position, text)
-            },
-            setActive = {
-                // TODO: change??
-            }
-        )
+        notesAdapter = NotesDetailScreenAdapter(notesViewModel)//------------------------set-adapter
         setResetTempNotes()
         binding.apply {
             notesDetailRecycler.apply {

@@ -36,11 +36,17 @@ class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
         Log.i(TAG, "changed isChecked status for $position to $isChecked")
     }
 
+    //---------------------------------------------------------------------------set-active-position
+
+    fun setActive(position: Int) {
+        activeElement = position
+    }
+
     //-------------------------------------------------------------------------------bottom-controls
     fun changeIsListItemAtTempNotes() {
         _tempNotes.value!![activeElement].isAListItem =
             !tempNotes.value!![activeElement].isAListItem
-        Log.i(TAG, "isAListItem changed")
+        Log.i(TAG, "isAListItem changed for element - $activeElement")
     }
 
     fun addTabAtTempNotes() {
@@ -77,8 +83,11 @@ class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
     //----------------------------------------------------------------------------------key-detector
     fun onEnterKey(position: Int, text: String) {
         val topNote = tempNotes.value!![position]
-        // TODO: outOfIndex Error in above line has to be fixed.
-        Log.i(TAG, "index for tempNotes = $position")
+        // TODO: -------------------------------------outOfIndex-Error-in-above-line-has-to-be-fixed
+        Log.i(
+            TAG,
+            "index for tempNotes = $position and size of tempNotes - ${tempNotes.value!!.size}"
+        )
         _tempNotes.value!!.add(
             position + 1,
             Note(
@@ -103,12 +112,22 @@ class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
     //-----------------------------------------------------------------------------------model-reset
     fun resetModel() {
         _tempNotes = MutableLiveData(mutableListOf())
+        activeElement = 0
     }
 
     //---------------------------------------------------------------------------------Dao-functions
-    fun insert(nd: NotesData) = CoroutineScope(Dispatchers.IO).launch { notesDao.insert(nd) }
-    fun update(nd: NotesData) = CoroutineScope(Dispatchers.IO).launch { notesDao.update(nd) }
-    fun delete(nd: NotesData) = CoroutineScope(Dispatchers.IO).launch { notesDao.delete(nd) }
+    fun insert(nd: NotesData) {
+        CoroutineScope(Dispatchers.IO).launch { notesDao.insert(nd) }
+    }
+
+    fun update(nd: NotesData) {
+        CoroutineScope(Dispatchers.IO).launch { notesDao.update(nd) }
+    }
+
+    fun delete(nd: NotesData) {
+        CoroutineScope(Dispatchers.IO).launch { notesDao.delete(nd) }
+    }
+
     fun getAllId(): Flow<List<Int>> = notesDao.getAllId()
     fun getById(id: Int): Flow<NotesData> = notesDao.getById(id)
     //-------------------------------------------------------------------------------close-viewModel

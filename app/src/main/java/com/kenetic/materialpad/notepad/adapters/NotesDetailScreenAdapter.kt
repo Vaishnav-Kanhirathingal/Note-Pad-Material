@@ -14,36 +14,24 @@ import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 
 private const val TAG = "NotesDetailScreenAdapter"
 
-class NotesDetailScreenAdapter(
-    var viewModel: NotesViewModel,
-    private val fileUpdate: (
-        position: Int,
-        text: String
-    ) -> Unit,
-    private val setActive: (position: Int) -> Unit
-) :
+class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
     ListAdapter<Note, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
 
-    class ViewHolder(private val binding: TaskOrNotesItemBinding) :
+    class ViewHolder(val binding: TaskOrNotesItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             note: Note,
             position: Int,
-            textUpdater: (
-                position: Int,
-                text: String
-            ) -> Unit,
-            setActive: (position: Int) -> Unit,
             viewModel: NotesViewModel,
         ) {
             val previousText = ""
             binding.apply {
-                if (note.isAListItem) {
-                    checkbox.visibility = View.VISIBLE
-                    checkbox.isChecked = note.listItemIsChecked
+                checkbox.visibility = if (note.isAListItem) {
+                    View.VISIBLE
                 } else {
-                    checkbox.visibility = View.GONE
+                    View.GONE
                 }
+                checkbox.isChecked = note.listItemIsChecked
                 editText.setText(note.content)
 
                 checkbox.setOnClickListener {//-----------------------------------check-box-listener
@@ -55,30 +43,28 @@ class NotesDetailScreenAdapter(
                     val currText = it.toString()
                     when {
                         previousText.length == currText.length -> {//-------------backspace-detected
-                            Log.i(TAG, "back-space detected")
                             viewModel.onBackSpaceKey(position, currText)
                         }
-                        "\n" in currText -> {//-----------------------------------enter-key-detected
-                            Log.i(TAG, "\\n detected")
+                        "\n" in currText -> {//---------------------------------------enter-detected
                             val temp = currText.split("\n", limit = 2)
                             editText.setText(temp[0])
                             viewModel.onEnterKey(position, temp[1])
                         }
                         else -> {//----------------------------------------------------normal-update
-                            textUpdater(
+                            viewModel.textUpdater(
                                 position, currText
                             )
-                            setActive(position)
+                            viewModel.setActive(position)
                         }
                     }
                 }
                 editText.setOnFocusChangeListener { _, hasFocus: Boolean ->
                     if (hasFocus) {
-                        Log.i(TAG,"focus on position - $position")
+                        Log.i(TAG, "focus on position - $position")
                         viewModel.activeElement = position
-                    }else if (position==viewModel.activeElement){
+                    } else if (position == viewModel.activeElement) {
                         editText.requestFocus()
-                        Log.i(TAG,"focus on position - $position")
+                        Log.i(TAG, "focus on position - $position")
                     }
                 }
             }
@@ -88,11 +74,11 @@ class NotesDetailScreenAdapter(
     companion object {
         private val diffCallBack = object : DiffUtil.ItemCallback<Note>() {
             override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
-                return oldItem == newItem
+                return oldItem.isAListItem == newItem.isAListItem
             }
 
             override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
-                return oldItem == newItem
+                return oldItem.content == newItem.content
             }
         }
     }
@@ -105,8 +91,6 @@ class NotesDetailScreenAdapter(
         holder.bind(
             getItem(position),
             position,
-            fileUpdate,
-            setActive,
             viewModel
         )
     }
