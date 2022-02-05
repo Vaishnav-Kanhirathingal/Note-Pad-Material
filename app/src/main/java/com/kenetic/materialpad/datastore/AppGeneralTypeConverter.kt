@@ -3,30 +3,12 @@ package com.kenetic.materialpad.datastore
 import android.util.Log
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.kenetic.materialpad.notepad.dataclass.Note
 import com.kenetic.materialpad.taskpad.dataclass.Task
 
 private const val TAG = "AppGeneralTypeConverter"
 
 class AppGeneralTypeConverter {
-    //----------------------------------------------------------------------------------------------
-    @TypeConverter
-    fun fromListOfBoolean(temp: List<Boolean>): String =
-        Gson().toJson(temp)//todo - check for consistency
-
-    @TypeConverter
-    fun toListOfBoolean(temp: String): List<Boolean> =
-        Gson().fromJson(temp, listOf<Boolean>().javaClass)
-
-    @TypeConverter
-    fun fromListOfString(temp: List<String>): String =
-        Gson().toJson(temp)//todo - check for consistency
-
-    @TypeConverter
-    fun toListOfString(temp: String): List<String> =
-        Gson().fromJson(temp, listOf<String>().javaClass)
-
     //----------------------------------------------------------------------------------------------
     @TypeConverter
     fun fromListOfNotes(temp: List<Note>): String {
@@ -45,21 +27,30 @@ class AppGeneralTypeConverter {
     }
 
     @TypeConverter
-    fun toListOfNotes(temp: String): List<Note> {
+    fun toListOfNotes(temp: String): List<Note> {//------------------------working-properly-verified
         val listOfPureNotes = mutableListOf<Note>()
-
-        val returnType = object : TypeToken<MutableList<String>>() {}.javaClass
-
         for (i in Gson().fromJson(temp, mutableListOf<String>().javaClass)) {
+//            Log.i(TAG, "end\n\nloop element - $i")
             val tempNotesJsonAsList = Gson().fromJson(i, mutableListOf<String>().javaClass)
+            //----------------------------------------------------------------getting-note-variables
+            val isAListItem = Gson().fromJson(tempNotesJsonAsList[0], true.javaClass)
+            val listItemIsChecked = Gson().fromJson(tempNotesJsonAsList[1], true.javaClass)
+            val content = Gson().fromJson(tempNotesJsonAsList[2], "".javaClass)
+            //-----------------------------------------------------------------adding-note-variables
             listOfPureNotes.add(
-                Note(
-                    isAListItem = Gson().fromJson(tempNotesJsonAsList[0], true.javaClass),
-                    listItemIsChecked = Gson().fromJson(tempNotesJsonAsList[1], true.javaClass),
-                    content = Gson().fromJson(tempNotesJsonAsList[2], "".javaClass)
-                )
+                Note(isAListItem, listItemIsChecked, content)
             )
         }
+        //--------------------------------------checking-elements TODO: remove-this-in-final-version
+//        for (i in listOfPureNotes) {
+//            Log.i(
+//                TAG,
+//                "Note contents\n" +
+//                        "[content] - [${i.content.javaClass}] - ${i.content}\n" +
+//                        "[isAListItem] - [${i.isAListItem.javaClass}] - ${i.isAListItem}\n" +
+//                        "[listItemIsChecked] - [${i.listItemIsChecked.javaClass}] - ${i.listItemIsChecked}"
+//            )
+//        }
         return listOfPureNotes
     }
 
@@ -83,9 +74,7 @@ class AppGeneralTypeConverter {
     @TypeConverter
     fun toListOfTasks(temp: String): List<Task> {
         val listOfPureTasks = mutableListOf<Task>()
-        //retrieves list of json string that is convertible to Task objects and iterates through it
         for (i in Gson().fromJson(temp, mutableListOf<String>().javaClass)) {
-            //each string 'i' represents Task class object as a list of all its variables as json strings
             val tempTasksJsonAsList = Gson().fromJson(i, mutableListOf<String>().javaClass)
             listOfPureTasks.add(
                 Task(
@@ -94,7 +83,7 @@ class AppGeneralTypeConverter {
                 )
             )
         }
-        return Gson().fromJson(temp, listOf<Task>().javaClass)
+        return listOfPureTasks
     }
 //----------------------------------------------------------------------------------------------
 }

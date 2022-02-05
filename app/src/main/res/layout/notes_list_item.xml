@@ -9,7 +9,8 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/recycler_padding"
+        android:layout_marginTop="@dimen/recycler_double_padding"
+        android:layout_marginHorizontal="@dimen/recycler_padding"
         app:cardCornerRadius="@dimen/card_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,10 +50,11 @@
                 android:layout_marginHorizontal="@dimen/card_text_horizontal_margin"
                 android:layout_marginBottom="@dimen/card_margin"
                 app:layout_constraintBottom_toTopOf="@id/notes_last_updated"
-                app:layout_constraintHeight_max="200dp"
+                app:layout_constraintHeight_max="180dp"
+                app:layout_constraintHeight_min="100dp"
                 app:layout_constraintTop_toBottomOf="@id/ruler_one"
-                tools:listitem="@layout/task_or_notes_item"
-                tools:text="@string/long_sample_text" />
+                tools:itemCount="2"
+                tools:listitem="@layout/task_or_notes_item" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/notes_last_updated"

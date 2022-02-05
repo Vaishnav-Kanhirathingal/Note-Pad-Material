@@ -95,8 +95,8 @@ class NotesDetailFragment : Fragment() {
     }
 
     private fun setResetTempNotes() {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (unSaved) {
+        if (unSaved) {
+            CoroutineScope(Dispatchers.IO).launch {
                 notesViewModel.setTempNotes(
                     mutableListOf(
                         Note(isAListItem = false, listItemIsChecked = false, content = "")
@@ -108,13 +108,24 @@ class NotesDetailFragment : Fragment() {
                     title = "Untitled",
                     dateFormatted = System.currentTimeMillis()
                 )
-            } else {
-                currentNotesData = notesViewModel.getById(notesId).asLiveData().value!!
+            }
+        } else {
+            Log.i(TAG, "integer sent - $notesId [${notesId.javaClass}]")
+            notesViewModel.getById(notesId).asLiveData().observe(viewLifecycleOwner) {
+                it.apply {
+                    Log.i(TAG, "id detected = $id")
+                    Log.i(TAG, "date detected = $dateFormatted")
+                    Log.i(TAG, "isFavorite detected = $isFavourite")
+                    Log.i(TAG, "title detected = $title")
+                    Log.i(TAG, "notes size detected = ${notes.size}")
+                }
+                currentNotesData = it
                 notesViewModel.setTempNotes(currentNotesData.notes.toMutableList())
             }
-            fileChanged = false
-            setFavouriteIcon()
         }
+        fileChanged = false
+        setFavouriteIcon()
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

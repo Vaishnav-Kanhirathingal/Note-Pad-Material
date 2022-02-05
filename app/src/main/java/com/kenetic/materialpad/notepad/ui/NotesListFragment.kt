@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kenetic.materialpad.databinding.FragmentNotesListBinding
 import com.kenetic.materialpad.datastore.AppApplication
 import com.kenetic.materialpad.notepad.adapters.NotesMainScreenAdapter
@@ -55,9 +55,11 @@ class NotesListFragment : Fragment() {
             NotesMainScreenAdapter(
                 viewModel = notesViewModel,
                 lifecycleOwner = viewLifecycleOwner,
-                fragInstance = this
+                fragInstance = this,
+                context = requireContext()
             )
-        binding.notesMainRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.notesMainRecycler.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.notesMainRecycler.adapter = adapter
         notesViewModel.getAllId().asLiveData().observe(viewLifecycleOwner) {
             adapter.submitList(it)
