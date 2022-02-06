@@ -5,4 +5,10 @@
     <string name="long_sample_text">SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING SOMETHING</string>
     <string name="cancel">Cancel</string>
     <string name="change">Change</string>
+    <string name="confirm">Confirm</string>
+    <string name="restore_task_list_question">Restore Task List To Previous State?</string>
+    <string name="delete_task_list_question">Delete Current Task List?</string>
+
+    <string name="restore_note_list_question">Restore Note List To Previous State?</string>
+    <string name="delete_note_List_question">Delete Current Note List?</string>
 </resources>

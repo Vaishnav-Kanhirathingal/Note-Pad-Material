@@ -1,5 +1,6 @@
 package com.kenetic.materialpad.notepad.ui
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kenetic.materialpad.R
 import com.kenetic.materialpad.databinding.FragmentNotesDetailBinding
+import com.kenetic.materialpad.databinding.PromptConfirmationBinding
+import com.kenetic.materialpad.databinding.PromptTitleBinding
 import com.kenetic.materialpad.datastore.AppApplication
 import com.kenetic.materialpad.notepad.adapters.NotesDetailScreenAdapter
 import com.kenetic.materialpad.notepad.dataclass.Note
@@ -32,18 +35,15 @@ class NotesDetailFragment : Fragment() {
         )
     }
     private lateinit var notesAdapter: NotesDetailScreenAdapter
-
     private lateinit var currentNotesData: NotesData
     private var unSaved = true
     private var notesId = 0
-    private var isFavourite = false
-    private var title = "Untitled"
     private var fileChanged = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         arguments.let {
             unSaved = it!!.getBoolean("from_fab")
             notesId = it.getInt("notes_id")
@@ -56,14 +56,25 @@ class NotesDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        notesAdapter = NotesDetailScreenAdapter(notesViewModel)//------------------------set-adapter
+        notesAdapter =
+            NotesDetailScreenAdapter(notesViewModel, viewLifecycleOwner)//---------------set-adapter
         setResetTempNotes()
         binding.apply {
             notesDetailRecycler.apply {
                 layoutManager = GridLayoutManager(requireContext(), 1)
                 adapter = notesAdapter
             }
-            //-----------------------------------------------------------------------bottom-controls
+        }
+        notesViewModel.tempNotes.observe(viewLifecycleOwner) {
+            // TODO: if size changes, only then submit the list
+            notesAdapter.submitList(it)
+        }
+        setBottomControls()
+        setSideControls()
+    }
+
+    private fun setBottomControls() {
+        binding.apply {
             checklistLayout.setOnClickListener {
                 notesViewModel.changeIsListItemAtTempNotes()
             }
@@ -71,22 +82,75 @@ class NotesDetailFragment : Fragment() {
                 notesViewModel.addTabAtTempNotes()
             }
             shareLayout.setOnClickListener {
-                notesViewModel.shareNotes()
+                notesViewModel.shareNotes(currentNotesData.title, currentNotesData.isFavourite)
             }
             favouriteLayout.setOnClickListener {
-                isFavourite = !isFavourite
+                currentNotesData.isFavourite = !currentNotesData.isFavourite
                 setFavouriteIcon()
             }
         }
-        notesViewModel.tempNotes.observe(viewLifecycleOwner) {
-            // TODO: if size changes, only then submit the list
-            notesAdapter.submitList(it)
+    }
+
+    private fun setSideControls() {
+        binding.apply {
+            sideControlsSave.setOnClickListener {
+                Log.i(TAG, "save menu button working properly")
+                saveTempNotes()
+            }
+            val promptBinding = PromptConfirmationBinding.inflate(layoutInflater)
+            val alertDialog = Dialog(requireContext())
+            alertDialog.apply {
+                setContentView(promptBinding.root)
+                window!!.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                setCancelable(true)
+            }//---------------------------------------------------------------------------common
+            sideControlsRestore.setOnClickListener {
+                Log.i(TAG, "restore menu button working properly")
+                alertDialog.apply {
+                    promptBinding.apply {
+                        questionTextView.setText(R.string.restore_note_list_question)
+                        confirmationButton.setOnClickListener {
+                            Log.i(TAG, "recover menu button working properly")
+                            setResetTempNotes()
+                            dismiss()
+                        }
+                        cancelButton.setOnClickListener {
+                            dismiss()
+                        }
+                    }
+                    show()
+                }
+            }
+            sideControlsDelete.setOnClickListener {
+                alertDialog.apply {
+                    promptBinding.apply {
+                        questionTextView.setText(R.string.delete_note_List_question)
+                        confirmationButton.setOnClickListener {
+                            if (!unSaved) {
+                                notesViewModel.delete(currentNotesData)
+                            }
+                            notesViewModel.resetModel()
+                            findNavController().navigate(
+                                NotesDetailFragmentDirections.actionNotesDetailFragmentToNotesListFragment()
+                            )
+                        }
+                        cancelButton.setOnClickListener {
+                            dismiss()
+                        }
+                    }
+                    show()
+                }
+                // TODO: add prompt
+                Log.i(TAG, "delete menu button working properly")
+            }
         }
     }
 
     private fun setFavouriteIcon() {
         binding.favouriteImage.setImageResource(
-            if (isFavourite) {
+            if (currentNotesData.isFavourite) {
                 R.drawable.star_selected_24
             } else {
                 R.drawable.star_unselected_24
@@ -96,45 +160,34 @@ class NotesDetailFragment : Fragment() {
 
     private fun setResetTempNotes() {
         if (unSaved) {
-            CoroutineScope(Dispatchers.IO).launch {
-                notesViewModel.setTempNotes(
-                    mutableListOf(
-                        Note(isAListItem = false, listItemIsChecked = false, content = "")
-                    )
+            notesViewModel.setTempNotes(
+                mutableListOf(
+                    Note(isAListItem = false, listItemIsChecked = false, content = "")
                 )
-                currentNotesData = NotesData(
-                    notes = notesViewModel.tempNotes.value!!,
-                    isFavourite = false,
-                    title = "Untitled",
-                    dateFormatted = System.currentTimeMillis()
-                )
-            }
+            )
+            currentNotesData = NotesData(
+                notes = notesViewModel.tempNotes.value!!,
+                isFavourite = false,
+                title = "Untitled",
+                dateFormatted = System.currentTimeMillis()
+            )
         } else {
             Log.i(TAG, "integer sent - $notesId [${notesId.javaClass}]")
             notesViewModel.getById(notesId).asLiveData().observe(viewLifecycleOwner) {
-                it.apply {
-                    Log.i(TAG, "id detected = $id")
-                    Log.i(TAG, "date detected = $dateFormatted")
-                    Log.i(TAG, "isFavorite detected = $isFavourite")
-                    Log.i(TAG, "title detected = $title")
-                    Log.i(TAG, "notes size detected = ${notes.size}")
-                }
                 currentNotesData = it
                 notesViewModel.setTempNotes(currentNotesData.notes.toMutableList())
             }
         }
         fileChanged = false
         setFavouriteIcon()
-
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun saveTempNotes() {
         CoroutineScope(Dispatchers.IO).launch {
             currentNotesData.apply {
                 notes = notesViewModel.tempNotes.value!!
-                isFavourite = this@NotesDetailFragment.isFavourite
-                title = this@NotesDetailFragment.title
+                isFavourite = this@NotesDetailFragment.currentNotesData.isFavourite
+                title = this@NotesDetailFragment.currentNotesData.title
                 dateFormatted = System.currentTimeMillis()
             }
             if (unSaved) {
@@ -152,31 +205,28 @@ class NotesDetailFragment : Fragment() {
         //super.onCreateOptionsMenu(menu, inflater)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.details_delete -> {
-                Log.i(TAG, "delete menu button working properly")
-                //todo - add a function to delete active list item
-                if (!unSaved) {
-                    notesViewModel.delete(currentNotesData)
+            R.id.title_change -> {
+                Log.i(TAG, "prompt title changer layout")
+                val promptBinding = PromptTitleBinding.inflate(layoutInflater)
+                val alertDialog = Dialog(requireContext())
+                alertDialog.apply {
+                    setContentView(promptBinding.root)
+                    window!!.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                    setCancelable(true)
+                    promptBinding.apply {
+                        titleEditText.setText(currentNotesData.title)
+                        cancelButton.setOnClickListener { alertDialog.dismiss() }
+                        changeButton.setOnClickListener {
+                            currentNotesData.title = titleEditText.text.toString()
+                            alertDialog.dismiss()
+                        }
+                    }
+                    show()
                 }
-                // TODO: add a viewModel values resetting function
-                findNavController().navigate(
-                    NotesDetailFragmentDirections.actionNotesDetailFragmentToNotesListFragment()
-                )
-                true
-            }
-
-            R.id.details_recover -> {
-                Log.i(TAG, "recover menu button working properly")
-                setResetTempNotes()
-                true
-            }
-
-            R.id.details_save -> {
-                Log.i(TAG, "save menu button working properly")
-                saveTempNotes()
                 true
             }
 

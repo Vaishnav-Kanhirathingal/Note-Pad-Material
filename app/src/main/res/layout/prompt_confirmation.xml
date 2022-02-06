@@ -4,36 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_margin="20dp"
     app:cardCornerRadius="@dimen/prompt_margin"
-    tools:backgroundTint="#aaaaaa">
+    tools:backgroundTint="#dddddd"
+    tools:layout_margin="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/question_text_view"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/prompt_margin"
-            android:hint="Enter Title"
-            app:counterEnabled="true"
-            app:counterMaxLength="24"
-            app:helperText="Leaving This Empty Will Change The Title To 'Untitled'"
+            android:textAlignment="center"
+            android:textSize="@dimen/title_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/label_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:id="@+id/title_edit_text"
-                android:layout_height="wrap_content"
-                tools:text="Title One" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            tools:text="A Normal Confirmation Text Which Asks A Yes Or No Question" />
 
         <Button
             android:id="@+id/cancel_button"
@@ -49,17 +38,16 @@
             app:layout_constraintTop_toBottomOf="@id/question_text_view" />
 
         <Button
-            android:id="@+id/change_button"
+            android:id="@+id/confirmation_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/prompt_margin"
             android:layout_marginStart="@dimen/prompt_margin"
-            android:text="@string/change"
+            android:text="@string/confirm"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/cancel_button"
             app:layout_constraintRight_toRightOf="@id/question_text_view"
             app:layout_constraintTop_toBottomOf="@id/question_text_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +15,10 @@ import com.kenetic.materialpad.notepad.viewmodel.NotesViewModel
 
 private const val TAG = "NotesDetailScreenAdapter"
 
-class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
+class NotesDetailScreenAdapter(
+    private var viewModel: NotesViewModel,
+    private var lifecycleOwner: LifecycleOwner
+) :
     ListAdapter<Note, NotesDetailScreenAdapter.ViewHolder>(diffCallBack) {
 
     class ViewHolder(val binding: TaskOrNotesItemBinding) :
@@ -23,15 +27,17 @@ class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
             note: Note,
             position: Int,
             viewModel: NotesViewModel,
+            lifecycleOwner: LifecycleOwner
         ) {
             val previousText = ""
             binding.apply {
-                checkbox.visibility = if (note.isAListItem) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-                checkbox.isChecked = note.listItemIsChecked
+                    Log.i(TAG,"view updated")
+                    checkbox.visibility = if (note.isAListItem) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                    checkbox.isChecked = note.listItemIsChecked
                 editText.setText(note.content)
 
                 checkbox.setOnClickListener {//-----------------------------------check-box-listener
@@ -88,10 +94,6 @@ class NotesDetailScreenAdapter(var viewModel: NotesViewModel) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(
-            getItem(position),
-            position,
-            viewModel
-        )
+        holder.bind(getItem(position), position, viewModel, lifecycleOwner)
     }
 }

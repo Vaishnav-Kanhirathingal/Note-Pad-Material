@@ -54,11 +54,17 @@ class NotesViewModel(private val notesDao: NotesDao) : ViewModel() {
         Log.i(TAG, "tab space added to element - $activeElement")
     }
 
-    fun shareNotes() {
+    fun shareNotes(title: String, isFavourite: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            var sharableText = "date last edited - ${
+            var sharableText = "\ndate last edited - ${
                 SimpleDateFormat("HH:mm dd:MM:yy").format(System.currentTimeMillis())
-            }"
+            }\nTitle [${
+                if (isFavourite) {
+                    "💖"
+                } else {
+                    " "
+                }
+            }] - $title"
             tempNotes.value!!.size.let {
                 for (i in 0 until it) {
                     val tempOne = tempNotes.value!![i]

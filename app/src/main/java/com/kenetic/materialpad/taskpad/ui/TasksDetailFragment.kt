@@ -1,32 +1,31 @@
 package com.kenetic.materialpad.taskpad.ui
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kenetic.materialpad.R
 import com.kenetic.materialpad.databinding.FragmentTasksDetailBinding
+import com.kenetic.materialpad.databinding.PromptConfirmationBinding
+import com.kenetic.materialpad.databinding.PromptTitleBinding
 import com.kenetic.materialpad.datastore.AppApplication
 import com.kenetic.materialpad.taskpad.adapters.TasksDetailScreenAdapter
 import com.kenetic.materialpad.taskpad.dataclass.Task
 import com.kenetic.materialpad.taskpad.dataclass.TasksData
 import com.kenetic.materialpad.taskpad.viewmodel.TasksViewModel
 import com.kenetic.materialpad.taskpad.viewmodel.TasksViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 private const val TAG = "TasksDetailFragment"
 
 class TasksDetailFragment : Fragment() {
+    private var fileChanged = false
     private var taskId = 0
-    private var fromFab = true
+    private var unSaved = true
     private lateinit var adapter: TasksDetailScreenAdapter
     private lateinit var binding: FragmentTasksDetailBinding
     private val taskViewModel: TasksViewModel by activityViewModels {
@@ -34,20 +33,14 @@ class TasksDetailFragment : Fragment() {
             (activity?.application as AppApplication).appGeneralDatabase.tasksDao()
         )
     }
-    private var _tempTaskList: MutableLiveData<MutableList<Task>> = MutableLiveData(mutableListOf())
-    private val tempTaskList: MutableLiveData<MutableList<Task>> = _tempTaskList
     private lateinit var currentTasksData: TasksData
-    private var taskHasReminder = false
-    private var taskTitle = "Untitled"
-    private var isTaskFavourite = false
-    private var taskReminder: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         arguments.let {
-            fromFab = it!!.getBoolean("from_fab")
+            unSaved = it!!.getBoolean("from_fab")
             taskId = it.getInt("task_id")
         }
         binding = FragmentTasksDetailBinding.inflate(inflater, container, false)
@@ -59,47 +52,121 @@ class TasksDetailFragment : Fragment() {
         setHasOptionsMenu(true)
         adapter = TasksDetailScreenAdapter()
         resetTempTaskData()
-        tempTaskList.observe(viewLifecycleOwner) {
+        taskViewModel.tempTaskList.observe(viewLifecycleOwner) {
+            fileChanged = true
             adapter.submitList(it)
         }
         binding.apply {
             tasksDetailRecycler.layoutManager = GridLayoutManager(requireContext(), 1)
             tasksDetailRecycler.adapter = adapter
-            cleanLayout.setOnClickListener { cleanTasks() }
-            shareLayout.setOnClickListener { share() }
+            setBottomControls()
+            setSideControls()
+        }
+    }
+
+    private fun setBottomControls() {
+        binding.apply {
+            cleanLayout.setOnClickListener {
+                taskViewModel.cleanListOfTasks(requireContext())
+            }
+            shareLayout.setOnClickListener {
+                taskViewModel.share(currentTasksData.hasAReminder, currentTasksData.reminder)
+            }
             favouriteLayout.setOnClickListener {
-                isTaskFavourite = !isTaskFavourite
+                currentTasksData.isFavourite = !currentTasksData.isFavourite
                 setFavouriteIcon()
             }
-            setReminder.setOnClickListener {
+            reminderLayout.setOnClickListener {
                 changeReminder()
+                Log.i(TAG, "reminder listener working")
+            }
+        }
+    }
+
+    private fun setSideControls() {
+        binding.apply {
+            sideControlsSave.setOnClickListener {//---------------------------------------------save
+                Log.i(TAG, "save side menu button working properly")
+                saveTempTask()
+            }
+            val promptBinding = PromptConfirmationBinding.inflate(layoutInflater)
+            val alertDialog = Dialog(requireContext())
+            alertDialog.apply {
+                setContentView(promptBinding.root)
+                window!!.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                setCancelable(true)
+            }//--------------------------------------------------------------generate-prompt-binding
+            sideControlsRestore.setOnClickListener {//---------------------------------------restore
+                alertDialog.apply {
+                    promptBinding.apply {
+                        questionTextView.setText(R.string.restore_task_list_question)
+                        confirmationButton.setOnClickListener {
+                            resetTempTaskData()
+                            dismiss()
+                        }
+                        cancelButton.setOnClickListener {
+                            dismiss()
+                        }
+                    }
+                    show()
+                }
+                Log.i(TAG, "restore side menu button working properly")
+            }
+            sideControlsDelete.setOnClickListener {//-----------------------------------------delete
+                alertDialog.apply {
+                    promptBinding.apply {
+                        questionTextView.setText(R.string.delete_task_list_question)
+                        confirmationButton.setOnClickListener {
+                            if (!unSaved) {
+                                taskViewModel.delete(currentTasksData)
+                            }
+                            taskViewModel.resetTempTasks()
+                            findNavController().navigate(
+                                TasksDetailFragmentDirections.actionTasksDetailFragmentToTasksListFragment()
+                            )
+                            dismiss()
+                        }
+                        cancelButton.setOnClickListener {
+                            dismiss()
+                        }
+                    }
+                    show()
+                }
+                Log.i(TAG, "delete side menu button working properly")
             }
         }
     }
 
     private fun resetTempTaskData() {
-        _tempTaskList.value = if (fromFab) {
-            mutableListOf(Task(isDone = false, task = ""))
+        if (unSaved) {
+            taskViewModel.setTempTasks(mutableListOf(Task(isDone = false, task = "")))
+            currentTasksData = TasksData(
+                listOfTasks = taskViewModel.tempTaskList.value!!,
+                isFavourite = false,
+                title = "Untitled",
+                hasAReminder = false,
+                dateFormatted = System.currentTimeMillis(),
+                reminder = 0
+            )
         } else {
-            taskViewModel.getById(taskId).asLiveData().value!!.listOfTasks.toMutableList()
+            currentTasksData = taskViewModel.getById(taskId).asLiveData().value!!
+            taskViewModel.setTempTasks(currentTasksData.listOfTasks.toMutableList())
         }
     }
 
     private fun saveTempTask() {
-        currentTasksData = TasksData(
-            listOfTasks = tempTaskList.value!!.toList(),
-            isFavourite = isTaskFavourite,
-            title = taskTitle,
-            hasAReminder = taskHasReminder,
-            dateFormatted = System.currentTimeMillis(),
-            reminder = taskReminder
-        )
-        if (fromFab) {
+        currentTasksData.apply {
+            listOfTasks = taskViewModel.tempTaskList.value!!.toList()
+            dateFormatted = System.currentTimeMillis()
+        }
+        if (unSaved) {
             taskViewModel.insert(currentTasksData)
         } else {
             taskViewModel.update(currentTasksData)
         }
-        fromFab = false
+        fileChanged = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -109,16 +176,27 @@ class TasksDetailFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.details_delete -> {
-                //add delete prompt then delete this item using the id
-                true
-            }
-            R.id.details_recover -> {
-                resetTempTaskData()
-                true
-            }
-            R.id.details_save -> {
-                saveTempTask()
+            R.id.title_change -> {
+                Log.i(TAG, "prompt title changer layout")
+                val promptBinding = PromptTitleBinding.inflate(layoutInflater)
+                val alertDialog = Dialog(requireContext())
+                alertDialog.apply {
+                    setContentView(promptBinding.root)
+                    window!!.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                    setCancelable(true)
+                    promptBinding.apply {
+                        titleEditText.setText(currentTasksData.title)
+                        cancelButton.setOnClickListener { alertDialog.dismiss() }
+                        changeButton.setOnClickListener {
+                            currentTasksData.title = titleEditText.text.toString()
+                            alertDialog.dismiss()
+                        }
+                    }
+                    show()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -126,58 +204,19 @@ class TasksDetailFragment : Fragment() {
     }
 
     private fun changeReminder() {
-        if (taskHasReminder) {
-            taskHasReminder = false
-            setAlarmIcon()
-        } else {
-            //todo - get reminder from user
-        }
-    }
-
-    private fun cleanTasks() {
-        val offset = 0
-        tempTaskList.value!!.size.let {
-            val cleaningList = tempTaskList.value!!
-            for (i in 0..it) {
-                if (cleaningList[i].isDone) {
-                    _tempTaskList.value!!.removeAt(i - offset)
-                    offset + 1
-                }
-            }
-        }
-        Toast.makeText(requireContext(), "Tasks removed - $offset", Toast.LENGTH_LONG).show()
-    }
-
-    private fun share() {
-        CoroutineScope(Dispatchers.IO).launch {
-            var sharableString = if (taskHasReminder) {
-                "task been scheduled for - ${
-                    SimpleDateFormat("HH:mm on dd:MM:yy").format(taskReminder)
-                }"
+        currentTasksData.hasAReminder.apply {
+            if (this) {
+                currentTasksData.hasAReminder = false
+                setAlarmIcon()
             } else {
-                ""
+                // TODO: alarm prompt
             }
-            tempTaskList.value!!.size.let {
-                for (i in 0..it) {
-                    val tempOne = tempTaskList.value!![i]
-                    sharableString+=
-                        "${
-                            if (tempOne.isDone) {
-                                "[#] - "
-                            } else {
-                                "[ ] - "
-                            }
-                        }${tempOne.task}\n"
-                }
-            }
-            Log.i(TAG, "message copied -\n${sharableString}")
-            //todo - start intent for sharing
         }
     }
 
     private fun setFavouriteIcon() {
         binding.favouriteImage.setImageResource(
-            if (isTaskFavourite) {
+            if (currentTasksData.isFavourite) {
                 R.drawable.star_selected_24
             } else {
                 R.drawable.star_unselected_24
@@ -187,7 +226,7 @@ class TasksDetailFragment : Fragment() {
 
     private fun setAlarmIcon() {
         binding.reminderIcon.setImageResource(
-            if (taskHasReminder) {
+            if (currentTasksData.hasAReminder) {
                 R.drawable.alarm_on_24
             } else {
                 R.drawable.alarm_off_24
